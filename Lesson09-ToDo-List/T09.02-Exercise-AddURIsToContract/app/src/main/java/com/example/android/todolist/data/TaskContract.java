@@ -16,6 +16,7 @@
 
 package com.example.android.todolist.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 
@@ -30,10 +31,27 @@ public class TaskContract {
         4) Content URI for data in the TaskEntry class
       */
 
+    public static final String SCHEME = "content://";
+
+    // The "Content authority" is a name for the entire content provider, similar to the
+    // relationship between a domain name and its website.  A convenient string to use for the
+    // content authority is the package name for the app, which is guaranteed to be unique on the
+    // device.
+    public static final String CONTENT_AUTHORITY = "com.example.android.todolist";
+
+    // Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
+    // the content provider.
+    public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + CONTENT_AUTHORITY);
+
+    // Possible paths (appended to base content URI for possible URI's)
+    public static final String PATHS_TASKS = "tasks";
+
 
     /* TaskEntry is an inner class that defines the contents of the task table */
     public static final class TaskEntry implements BaseColumns {
 
+        //Content Uri for TaskEntry
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATHS_TASKS).build();
 
         // Task table and column names
         public static final String TABLE_NAME = "tasks";
@@ -66,6 +84,8 @@ public class TaskContract {
          - - - - - - - - - - - - - - - - - - - - - -
 
          */
+
+
 
     }
 }
