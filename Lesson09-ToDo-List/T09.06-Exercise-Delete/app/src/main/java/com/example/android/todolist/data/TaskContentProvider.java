@@ -157,13 +157,50 @@ public class TaskContentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
         // TODO (1) Get access to the database and write URI matching code to recognize a single item
+        final SQLiteDatabase database = mTaskDbHelper.getWritableDatabase();
+        int rowsDeleted;
 
-        // TODO (2) Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
+        int code = sUriMatcher.match(uri);
+
+        switch (code) {
+            case TASKS: {
+                rowsDeleted = database.delete(
+                        //Name of the table containing the data
+                        TaskContract.TaskEntry.TABLE_NAME,
+                        //Where clause (which rows will be affected)
+                        selection,
+                        //where clause arguments
+                        selectionArgs
+                );
+            }
+            break;
+
+            // TODO (2) Write the code to delete a single row of data
+            // [Hint] Use selections to delete an item by its row ID
+            case TASK_WITH_ID: {
+                String[] mSelectionArgs = new String[] {uri.getPathSegments().get(1)};
+                String mSelection = TaskContract.TaskEntry._ID + "=?";
+
+                rowsDeleted = database.delete(
+                        //Name of the table containing the data
+                        TaskContract.TaskEntry.TABLE_NAME,
+                        //Where clause (which rows will be affected)
+                        mSelection,
+                        //where clause arguments
+                        mSelectionArgs
+                );
+            }
+            break;
+
+            default: {
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        }
 
         // TODO (3) Notify the resolver of a change and return the number of items deleted
+        getContext().getContentResolver().notifyChange(uri, null);
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        return rowsDeleted;
     }
 
 
